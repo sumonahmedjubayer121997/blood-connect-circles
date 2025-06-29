@@ -1,15 +1,20 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CreateCampaignModal from "@/components/CreateCampaignModal";
+import CampaignDetailsModal from "@/components/CampaignDetailsModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Calendar, Users, Share2 } from "lucide-react";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Campaigns = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const { toast } = useToast();
 
   // Mock campaign data
   const campaigns = [
@@ -50,6 +55,57 @@ const Campaigns = () => {
       status: "upcoming"
     }
   ];
+
+  const handleShare = async (campaign: any, event: React.MouseEvent) => {
+    event.stopPropagation();
+    const shareUrl = `${window.location.origin}/campaigns/${campaign.id}`;
+    const shareText = `Join the "${campaign.title}" blood donation campaign on ${campaign.date}!`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: campaign.title,
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (error) {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+        toast({
+          title: "Link copied!",
+          description: "Campaign link copied to clipboard.",
+        });
+      }
+    } else {
+      // Fallback to clipboard
+      try {
+        await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+        toast({
+          title: "Link copied!",
+          description: "Campaign link copied to clipboard.",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to copy link. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleViewDetails = (campaign: any) => {
+    setSelectedCampaign(campaign);
+    setDetailsModalOpen(true);
+  };
+
+  const handleJoinCampaign = (campaign: any, event: React.MouseEvent) => {
+    event.stopPropagation();
+    toast({
+      title: "Joined Campaign!",
+      description: `You've successfully joined "${campaign.title}".`,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -97,7 +153,7 @@ const Campaigns = () => {
 
         <div className="space-y-6">
           {campaigns.map((campaign) => (
-            <Card key={campaign.id} className="hover:shadow-lg transition-shadow">
+            <Card key={campaign.id} className="hover:shadow-lg transition-shadow cursor-pointer">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -142,15 +198,26 @@ const Campaigns = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex space-x-2">
-                    <Button className="bg-medical-red hover:bg-medical-red-dark">
+                    <Button 
+                      className="bg-medical-red hover:bg-medical-red-dark"
+                      onClick={(e) => handleJoinCampaign(campaign, e)}
+                    >
                       Join Campaign
                     </Button>
-                    <Button variant="outline">
+                    <Button 
+                      variant="outline"
+                      onClick={(e) => handleShare(campaign, e)}
+                    >
                       <Share2 className="h-4 w-4 mr-2" />
                       Share
                     </Button>
                   </div>
-                  <Button variant="ghost">View Details</Button>
+                  <Button 
+                    variant="ghost"
+                    onClick={() => handleViewDetails(campaign)}
+                  >
+                    View Details
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -181,6 +248,15 @@ const Campaigns = () => {
       <CreateCampaignModal 
         isOpen={createModalOpen} 
         onClose={() => setCreateModalOpen(false)} 
+      />
+      
+      <CampaignDetailsModal
+        campaign={selectedCampaign}
+        isOpen={detailsModalOpen}
+        onClose={() => {
+          setDetailsModalOpen(false);
+          setSelectedCampaign(null);
+        }}
       />
     </div>
   );

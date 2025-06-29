@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { MapPin, Phone, Mail, Calendar, Download, Edit, Save, X } from "lucide-react";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface UserProfileData {
   fullName: string;
@@ -70,45 +71,73 @@ const UserProfile = () => {
   };
 
   const generateDonorCard = () => {
-    // Create a simple HTML structure for the donor card
-    const cardContent = `
-      <div style="width: 350px; height: 220px; border: 2px solid #dc2626; border-radius: 12px; padding: 20px; background: white; font-family: Arial, sans-serif;">
-        <div style="text-align: center; margin-bottom: 15px;">
-          <h2 style="color: #dc2626; margin: 0; font-size: 18px;">BLOOD DONOR CARD</h2>
-          <div style="background: #dc2626; height: 2px; width: 100%; margin: 5px 0;"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-          <strong>Name:</strong> <span>${profileData.fullName}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-          <strong>Blood Group:</strong> <span style="color: #dc2626; font-weight: bold; font-size: 18px;">${profileData.bloodGroup}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-          <strong>Location:</strong> <span>${profileData.location}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-          <strong>Last Donation:</strong> <span>${profileData.lastDonationDate || 'N/A'}</span>
-        </div>
-        <div style="text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
-          <small style="color: #666;">BloodConnect Community Platform</small>
-        </div>
+    // Create a temporary div for the donor card
+    const cardElement = document.createElement('div');
+    cardElement.style.width = '400px';
+    cardElement.style.height = '250px';
+    cardElement.style.padding = '20px';
+    cardElement.style.fontFamily = 'Arial, sans-serif';
+    cardElement.style.border = '3px solid #dc2626';
+    cardElement.style.borderRadius = '12px';
+    cardElement.style.background = 'white';
+    cardElement.style.position = 'fixed';
+    cardElement.style.left = '-9999px';
+    cardElement.style.top = '0';
+
+    cardElement.innerHTML = `
+      <div style="text-align: center; margin-bottom: 15px;">
+        <h2 style="color: #dc2626; margin: 0; font-size: 20px; font-weight: bold;">BLOOD DONOR CARD</h2>
+        <div style="background: #dc2626; height: 3px; width: 100%; margin: 8px 0;"></div>
+      </div>
+      <div style="margin-bottom: 12px; display: flex; justify-content: space-between;">
+        <strong>Name:</strong> <span>${profileData.fullName}</span>
+      </div>
+      <div style="margin-bottom: 12px; display: flex; justify-content: space-between;">
+        <strong>Blood Group:</strong> <span style="color: #dc2626; font-weight: bold; font-size: 24px;">${profileData.bloodGroup}</span>
+      </div>
+      <div style="margin-bottom: 12px; display: flex; justify-content: space-between;">
+        <strong>Location:</strong> <span>${profileData.location}</span>
+      </div>
+      <div style="margin-bottom: 15px; display: flex; justify-content: space-between;">
+        <strong>Last Donation:</strong> <span>${profileData.lastDonationDate || 'N/A'}</span>
+      </div>
+      <div style="text-align: center; border-top: 2px solid #e5e5e5; padding-top: 12px;">
+        <small style="color: #666; font-weight: bold;">BloodConnect Community Platform</small>
       </div>
     `;
 
-    // Create a new window and print
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head><title>Blood Donor Card</title></head>
-          <body style="margin: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-            ${cardContent}
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    }
+    document.body.appendChild(cardElement);
+
+    html2canvas(cardElement, {
+      width: 400,
+      height: 250,
+      scale: 2
+    }).then((canvas) => {
+      document.body.removeChild(cardElement);
+      
+      // Create PDF
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [100, 63] // Credit card size
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, 0, 100, 63);
+      pdf.save(`${profileData.fullName}_donor_card.pdf`);
+
+      toast({
+        title: "Success",
+        description: "Donor card downloaded successfully!",
+      });
+    }).catch((error) => {
+      document.body.removeChild(cardElement);
+      toast({
+        title: "Error",
+        description: "Failed to generate donor card. Please try again.",
+        variant: "destructive",
+      });
+    });
   };
 
   return (
@@ -137,7 +166,7 @@ const UserProfile = () => {
             <Button
               variant="outline"
               onClick={generateDonorCard}
-              disabled={!profileData.bloodGroup}
+              disabled={!profileData.bloodGroup || !profileData.fullName}
             >
               <Download className="h-4 w-4 mr-2" />
               Download Card
