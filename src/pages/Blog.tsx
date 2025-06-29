@@ -53,17 +53,18 @@ const Blog = () => {
           </p>
         </div>
 
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex space-x-2">
-            <Badge variant="outline">All Posts</Badge>
-            <Badge variant="outline">Success Stories</Badge>
-            <Badge variant="outline">Tips</Badge>
-            <Badge variant="outline">Education</Badge>
-          </div>
-          <Button className="bg-medical-red hover:bg-medical-red-dark">
-            Write a Post
-          </Button>
-        </div>
+        <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+  <div className="flex flex-wrap gap-2">
+    <Badge variant="outline">All Posts</Badge>
+    <Badge variant="outline">Success Stories</Badge>
+    <Badge variant="outline">Tips</Badge>
+    <Badge variant="outline">Education</Badge>
+  </div>
+  <Button className="bg-medical-red hover:bg-medical-red-dark w-full sm:w-auto">
+    Write a Post
+  </Button>
+</div>
+
 
         <div className="space-y-6">
           {blogPosts.map((post) => (
@@ -84,25 +85,29 @@ const Blog = () => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <Button variant="ghost" size="sm">
-                      <Heart className="h-4 w-4 mr-1" />
-                      {post.likes}
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <MessageCircle className="h-4 w-4 mr-1" />
-                      {post.comments}
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Share2 className="h-4 w-4 mr-1" />
-                      Share
-                    </Button>
-                  </div>
-                  <Button variant="outline">Read More</Button>
-                </div>
-              </CardContent>
+          <CardContent>
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+   <div className="flex flex-wrap gap-2">
+  <Button variant="ghost" size="sm" className="flex-1 min-w-[30%]">
+    <Heart className="h-4 w-4 mr-1" />
+    {post.likes}
+  </Button>
+  <Button variant="ghost" size="sm" className="flex-1 min-w-[30%]">
+    <MessageCircle className="h-4 w-4 mr-1" />
+    {post.comments}
+  </Button>
+  <Button variant="ghost" size="sm" className="flex-1 min-w-[30%]">
+    <Share2 className="h-4 w-4 mr-1" />
+    Share
+  </Button>
+</div>
+
+    <Button variant="outline" className="w-full sm:w-auto">
+      Read More
+    </Button>
+  </div>
+</CardContent>
+
             </Card>
           ))}
         </div>
