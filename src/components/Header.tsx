@@ -72,8 +72,14 @@ const Header = () => {
             
             {currentUser ? (
               <div className="flex items-center space-x-3">
+                <Link to="/profile">
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                </Link>
                 <span className="text-sm text-gray-600">
-                  Hello, {currentUser.displayName || currentUser.email}
+                  Hello, {currentUser.displayName || currentUser.email?.split('@')[0]}
                 </span>
                 <Button variant="outline" size="sm" onClick={handleSignOut}>
                   Sign Out
@@ -145,8 +151,14 @@ const Header = () => {
               <div className="pt-3 border-t space-y-2">
                 {currentUser ? (
                   <div className="space-y-2">
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start">
+                        <User className="h-4 w-4 mr-2" />
+                        Profile
+                      </Button>
+                    </Link>
                     <p className="text-sm text-gray-600">
-                      Hello, {currentUser.displayName || currentUser.email}
+                      Hello, {currentUser.displayName || currentUser.email?.split('@')[0]}
                     </p>
                     <Button variant="outline" className="w-full" onClick={handleSignOut}>
                       Sign Out

@@ -1,13 +1,16 @@
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CreateCampaignModal from "@/components/CreateCampaignModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Calendar, Users, Share2 } from "lucide-react";
+import { useState } from "react";
 
 const Campaigns = () => {
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+
   // Mock campaign data
   const campaigns = [
     {
@@ -84,7 +87,10 @@ const Campaigns = () => {
             <Badge variant="secondary">This Month</Badge>
             <Badge variant="secondary">Nearby</Badge>
           </div>
-          <Button className="bg-medical-red hover:bg-medical-red-dark">
+          <Button 
+            className="bg-medical-red hover:bg-medical-red-dark"
+            onClick={() => setCreateModalOpen(true)}
+          >
             Create Campaign
           </Button>
         </div>
@@ -159,7 +165,10 @@ const Campaigns = () => {
               <p className="text-gray-700 mb-4">
                 Create your own blood donation drive and help coordinate donors in your community.
               </p>
-              <Button className="bg-medical-blue hover:bg-blue-700">
+              <Button 
+                className="bg-medical-blue hover:bg-blue-700"
+                onClick={() => setCreateModalOpen(true)}
+              >
                 Create New Campaign
               </Button>
             </div>
@@ -168,6 +177,11 @@ const Campaigns = () => {
       </main>
       
       <Footer />
+      
+      <CreateCampaignModal 
+        isOpen={createModalOpen} 
+        onClose={() => setCreateModalOpen(false)} 
+      />
     </div>
   );
 };
