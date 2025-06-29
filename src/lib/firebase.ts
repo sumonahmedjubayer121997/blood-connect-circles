@@ -3,14 +3,15 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB-dy2Aqt3pfLVh3n-6v3B_p4kghxM9Dmc",
-  authDomain: "devblogwithfirebase.firebaseapp.com",
-  projectId: "devblogwithfirebase",
-  storageBucket: "devblogwithfirebase.appspot.com",
-  messagingSenderId: "619918278846",
-  appId: "1:619918278846:web:28828f4468db4d9b641eef",
-  measurementId: "G-QQ27LZNQJD"
+  apiKey: "AIzaSyBzpfzyxJiIcKfoHmkDIfe6mOLKpeVpwno",
+  authDomain: "todoapp-a512d.firebaseapp.com",
+  projectId: "todoapp-a512d",
+  storageBucket: "todoapp-a512d.firebasestorage.app",
+  messagingSenderId: "447087261794",
+  appId: "1:447087261794:web:914333a73fb5d64a87393b",
+  measurementId: "G-0M2MJSPKTK"
 };
+
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);

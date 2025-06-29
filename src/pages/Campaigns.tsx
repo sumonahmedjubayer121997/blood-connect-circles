@@ -16,7 +16,6 @@ const Campaigns = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const { toast } = useToast();
 
-  // Mock campaign data
   const campaigns = [
     {
       id: 1,
@@ -69,7 +68,6 @@ const Campaigns = () => {
           url: shareUrl,
         });
       } catch (error) {
-        // Fallback to clipboard
         await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
         toast({
           title: "Link copied!",
@@ -77,7 +75,6 @@ const Campaigns = () => {
         });
       }
     } else {
-      // Fallback to clipboard
       try {
         await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
         toast({
@@ -110,8 +107,8 @@ const Campaigns = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
-      <main className="container mx-auto px-4 py-8">
+
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Blood Donation Campaigns</h1>
           <p className="text-gray-600 text-lg">
@@ -119,16 +116,15 @@ const Campaigns = () => {
           </p>
         </div>
 
-        {/* Search and Filter */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>Find Campaigns</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <Input placeholder="Search campaigns..." />
               <Input placeholder="Location (City, State)" />
-              <div className="flex space-x-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button variant="outline" className="flex-1">Filter by Date</Button>
                 <Button className="bg-medical-red hover:bg-medical-red-dark">Search</Button>
               </div>
@@ -136,8 +132,8 @@ const Campaigns = () => {
           </CardContent>
         </Card>
 
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex space-x-2">
+        <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div className="flex flex-wrap gap-2">
             <Badge variant="outline">All Campaigns</Badge>
             <Badge variant="secondary">This Week</Badge>
             <Badge variant="secondary">This Month</Badge>
@@ -151,7 +147,7 @@ const Campaigns = () => {
           </Button>
         </div>
 
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {campaigns.map((campaign) => (
             <Card key={campaign.id} className="hover:shadow-lg transition-shadow cursor-pointer">
               <CardHeader>
@@ -196,8 +192,8 @@ const Campaigns = () => {
                     ></div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <Button 
                       className="bg-medical-red hover:bg-medical-red-dark"
                       onClick={(e) => handleJoinCampaign(campaign, e)}
@@ -224,9 +220,8 @@ const Campaigns = () => {
           ))}
         </div>
 
-        {/* Create Campaign CTA */}
         <Card className="mt-8 border-medical-blue bg-medical-blue/5">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="text-center">
               <h3 className="font-semibold text-medical-blue mb-2 text-lg">Want to Organize a Campaign?</h3>
               <p className="text-gray-700 mb-4">
@@ -242,14 +237,14 @@ const Campaigns = () => {
           </CardContent>
         </Card>
       </main>
-      
+
       <Footer />
-      
+
       <CreateCampaignModal 
         isOpen={createModalOpen} 
         onClose={() => setCreateModalOpen(false)} 
       />
-      
+
       <CampaignDetailsModal
         campaign={selectedCampaign}
         isOpen={detailsModalOpen}

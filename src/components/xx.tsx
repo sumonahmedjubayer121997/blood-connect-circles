@@ -156,7 +156,7 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2 sm:gap-4 justify-end">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
               onClick={generateDonorCard}
